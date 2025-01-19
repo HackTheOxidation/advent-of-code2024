@@ -15,7 +15,7 @@
 using Report = std::vector<int>;
 using Reports = std::vector<Report>;
 
-const bool isReportSafe(const Report& report) noexcept {
+bool isReportSafe(const Report& report) noexcept {
   const auto pairs = std::ranges::views::pairwise(report);
 
   const bool allAscending = std::all_of(pairs.cbegin(), pairs.cend(), [](auto p) {
@@ -33,6 +33,15 @@ const bool isReportSafe(const Report& report) noexcept {
   return (allAscending || allDescending) && isDiffOk;
 }
 
+bool isSafeWithProblemDampner(const Report& report) noexcept {
+  Reports permutedReports;
+  for (std::size_t i = 0; i < report.size(); i++) {
+    permutedReports.emplace_back(report);
+    permutedReports.at(i).erase(permutedReports.at(i).begin() + i);
+  }
+
+  return std::any_of(permutedReports.cbegin(), permutedReports.cend(), isReportSafe);
+}
 
 int main(int argc, char** argv) {
   if (argc != 2) {
@@ -55,7 +64,9 @@ int main(int argc, char** argv) {
     reports.emplace_back(report);
   }
 
-  const std::size_t result = std::count_if(reports.cbegin(), reports.cend(), isReportSafe);
+  const std::size_t result = std::count_if(reports.cbegin(), reports.cend(), [](auto& report) {
+    return isReportSafe(report) || isSafeWithProblemDampner(report);
+  });
 
   std::cout << result << '\n';
 
