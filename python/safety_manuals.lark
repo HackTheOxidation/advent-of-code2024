@@ -1,0 +1,16 @@
+
+safety_manual: page_orderings manual_updates
+
+page_orderings: (page_ordering)*
+
+page_ordering: page_number "|" page_number
+
+manual_updates: (manual_update)*
+
+manual_update: page_number ("," page_number)*
+
+page_number: INT -> number
+
+%import common.INT
+%import common.NEWLINE
+%ignore NEWLINE

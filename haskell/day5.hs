@@ -57,7 +57,7 @@ remainingManualUpdate = (char ',' >> parseManualUpdate) <|> (return [])
 applyParser :: String -> IO ()
 applyParser input = case (parse parseUpdateFile "(unknown)" input) of
   Right safetyManual -> putStrLn (show safetyManual) >> exitSuccess
-  Left error -> putStrLn ("ERROR - Unable to parse input: " ++ (show error)) >> exitFailure
+  Left err -> putStrLn ("ERROR - Unable to parse input: " ++ (show err)) >> exitFailure
 
 parseArgs :: [FilePath] -> IO ()
 parseArgs [] = putStrLn "ERROR - Expected a filename/path" >> exitFailure
