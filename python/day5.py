@@ -2,7 +2,6 @@ import sys
 from dataclasses import dataclass
 from functools import cmp_to_key
 from itertools import combinations
-from typing import Self
 
 from lark import Lark, Transformer
 
@@ -30,7 +29,8 @@ class SafetyManual:
     page_orderings: set[tuple[int, int]]
     manual_updates: list[list[int]]
 
-    def parse_safety_manual(manual_file: str, do_print: bool = False) -> Self:
+    @staticmethod
+    def parse_safety_manual(manual_file: str, do_print: bool = False):
         safety_manual_grammar = Lark.open("safety_manuals.lark", start=["safety_manual", "page_orderings", "manual_updates"], parser="lalr")
         with open(manual_file, "r") as input_file:
             page_orderings, manual_updates = input_file.read().split("\n\n")
