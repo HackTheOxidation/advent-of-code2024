@@ -1,50 +1,63 @@
 with Ada.Text_IO;
 with Ada.Containers.Vectors;
+with Ada.Strings; use Ada.Strings;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
 
 procedure Day1 is
     use Ada.Text_IO;
 
+    package Integer_IO is
+      new Ada.Text_IO.Integer_IO(Integer);
+    use Integer_IO;
+
     F_Type    : File_Type;
-    File_Name : String;
+    File_Name : Unbounded_String;
 
     package Integer_Vectors is new Ada.Containers.Vectors
        (Index_Type => Natural, Element_Type => Integer);
 
+    package Integer_Vectors_Sorting is new Integer_Vectors.Generic_Sorting;
+
     use Integer_Vectors;
+    use Integer_Vectors_Sorting;
 
     Left_Vector  : Vector;
     Right_Vector : Vector;
 
-    Result : Natural := 0;
+    Result : Integer := 0;
 begin
-    Put ("Enter the name of the file: ");
-    Get (File_Name);
+    Put("Enter the name of the file: ");
+    File_Name := To_Unbounded_String(Get_Line);
 
-    Open (F_Type, In_File, File_Name);
+    Ada.Text_IO.Open(F_Type, In_File, To_String(File_Name));
 
     declare
-        Number  : Integer;
+        Number  : Integer := 0;
         Counter : Natural := 0;
     begin
-        while not End_Of_File (F_Type) loop
-            Read (F_Type, Number);
-            if Counter mod 2 = 0 then
-                Left_Vector.Append (Number);
+        while not End_Of_File(F_Type) loop
+            Integer_IO.Get(F_Type, Number);
+            if (Counter mod 2) = 0 then
+                Left_Vector.Append(Number);
             else
-                Right_Vector.Append (Number);
+                Right_Vector.Append(Number);
             end if;
 
             Counter := Counter + 1;
         end loop;
     end;
 
-    Close (F_Type);
+    Close(F_Type);
+
+    Sort(Left_Vector);
+    Sort(Right_Vector);
 
     declare
         Difference : Integer;
     begin
         for I in Left_Vector.First_Index .. Left_Vector.Last_Index loop
-            Difference := abs (Left_Vector (I) - Right_Vector (I));
+            Difference := abs (Left_Vector(I) - Right_Vector(I));
             Result     := Result + Difference;
         end loop;
     end;
@@ -53,8 +66,8 @@ begin
 
 exception
     when Name_Error =>
-        Put_Line ("File: '" & File_Name & "' does not exist");
+        Put_Line ("File: '" & To_String(File_Name) & "' does not exist");
     when others     =>
         Put_Line
-           ("Encountered unknown error while processing file: " & File_Name);
+           ("Encountered unknown error while processing file: " & To_String(File_Name));
 end Day1;
