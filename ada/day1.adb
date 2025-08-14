@@ -27,6 +27,7 @@ procedure Day1 is
     Right_Vector : Vector;
 
     Result : Integer := 0;
+    Result2 : Integer := 0;
 begin
     if Ada.Command_Line.Argument_Count = 0 then
       Put("Enter the name of the file: ");
@@ -62,12 +63,27 @@ begin
         Difference : Integer;
     begin
         for I in Left_Vector.First_Index .. Left_Vector.Last_Index loop
-            Difference := abs (Left_Vector(I) - Right_Vector(I));
+            Difference := abs(Left_Vector(I) - Right_Vector(I));
             Result     := Result + Difference;
         end loop;
     end;
 
-    Put_Line (Result'Image);
+    Put_Line(Result'Image);
+
+    for Left_Element of Left_Vector loop
+      declare
+        Occurrance_Count : Integer := 0;
+      begin
+        for Right_Element of Right_Vector loop
+          if Left_Element = Right_Element then
+            Occurrance_Count := Occurrance_Count + 1;
+          end if;
+        end loop;
+        Result2 := Result2 + (Left_Element * Occurrance_Count);
+      end;
+    end loop;
+
+    Put_Line(Result2'Image);
 
 exception
     when Name_Error =>
