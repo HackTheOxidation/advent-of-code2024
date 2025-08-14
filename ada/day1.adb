@@ -3,6 +3,7 @@ with Ada.Containers.Vectors;
 with Ada.Strings; use Ada.Strings;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
+with Ada.Command_Line;
 
 procedure Day1 is
     use Ada.Text_IO;
@@ -27,8 +28,12 @@ procedure Day1 is
 
     Result : Integer := 0;
 begin
-    Put("Enter the name of the file: ");
-    File_Name := To_Unbounded_String(Get_Line);
+    if Ada.Command_Line.Argument_Count = 0 then
+      Put("Enter the name of the file: ");
+      File_Name := To_Unbounded_String(Get_Line);
+    else
+      File_Name := To_Unbounded_String(Ada.Command_Line.Argument(1));
+    end if;
 
     Ada.Text_IO.Open(F_Type, In_File, To_String(File_Name));
 
